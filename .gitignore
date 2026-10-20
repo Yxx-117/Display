@@ -1,0 +1,12 @@
+__pycache__/
+*.py[cod]
+
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# fetch_vendor.py 生成的 CDN 引用备份
+docsify_root/index.html.cdn.bak
+
+# 注意：docsify_root/vendor/ 需要提交，不要忽略
