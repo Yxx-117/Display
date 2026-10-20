@@ -40,7 +40,7 @@
 ## 三、部署到 GitHub Pages
 
 1. 在 GitHub 新建仓库（免费账号需设为 **Public**，私有仓库要 Pro 才能开 Pages）
-2. 把本目录内容推到 `main` 分支
+2. 把本目录内容推到默认分支（当前仓库为 `master`，工作流同时监听 `main` 与 `master`）
 3. 仓库 → **Settings → Pages → Source**，选择 **GitHub Actions**
 4. 推送代码，Actions 会自动执行：生成导航 → 打包 `docsify_root` → 部署
 5. 部署完成后，Settings → Pages 顶部会给出访问地址：
