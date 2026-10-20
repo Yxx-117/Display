@@ -25,7 +25,6 @@
 │   ├── .nojekyll              # 禁止 Jekyll 构建，避免 _sidebar.md 被忽略
 │   ├── README.md              # 首页（脚本生成）
 │   ├── _sidebar.md            # 侧边栏（脚本生成）
-│   ├── _coverpage.md          # 封面
 │   ├── _404.md                # 站内 404
 │   └── 01_产品业务文档/        # 数字前缀仅用于排序，展示时自动去掉
 │       ├── README.md          # 分类索引（脚本生成）

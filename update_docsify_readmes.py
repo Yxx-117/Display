@@ -26,8 +26,8 @@ README_NAME = "README.md"
 SIDEBAR_NAME = "_sidebar.md"
 
 # 站点信息，按你的实际情况修改
-SITE_TITLE = "团队知识库"
-SITE_DESC = "团队内部 Docsify 知识库，用于统一沉淀产品文档、技术资料与流程规范。"
+SITE_TITLE = "小闫同学_117个人知识库"
+SITE_DESC = "小闫同学_117个人 Docsify 知识库，用于统一沉淀产品文档、技术资料与流程规范。"
 
 # 不参与导航生成的目录
 IGNORE_DIRS = {"img", "images", "assets", "vendor", ".git", ".github", "node_modules"}
