@@ -83,7 +83,24 @@ python tools/fetch_vendor.py
 python tools/fetch_vendor.py --restore
 ```
 
-## 六、本地预览
+## 六、本地预览与维护
+
+推荐用交互式维护脚本，两件高频操作一个入口：
+
+```powershell
+cd docsify_root
+python ..\dev.py
+```
+
+```text
+  1. 更新目录导航        # 等价于 python ..\update_docsify_readmes.py
+  2. 本地调试            # 等价于 python -m http.server 3000
+  q. 退出
+```
+
+选 2 会自动打开浏览器，端口被占用时自动顺延；输入 `q` 停止服务并回到菜单。
+
+也可以不用菜单，直接执行：
 
 ```bash
 cd docsify_root

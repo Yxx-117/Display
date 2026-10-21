@@ -124,7 +124,7 @@ def write_final_dir_readme(directory: Path) -> None:
     lines = [
         f"# {display_name(directory)}",
         "",
-        "> 本页用于汇总当前目录文档入口。",
+        "> 本页用于汇总当前目录文档入口.",
         "",
         "## 文档列表",
         "",
@@ -147,7 +147,7 @@ def write_directory_index(directory: Path) -> None:
     lines = [
         f"# {display_name(directory)}",
         "",
-        "> 本页用于汇总当前目录下的文档与子目录入口。",
+        "> 本页用于汇总当前目录下的文档与子目录入口.",
         "",
         "## 文档列表",
         "",
