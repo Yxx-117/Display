@@ -3,8 +3,8 @@
 设计要点：
 - 仓库里不存导航生成物的"真相"，真相是目录树本身
 - 作者只维护 .md 正文，导航一律由本脚本重建
-- 生成链接统一使用站点根路径，并对路径做 URL 编码，
-  规避中文目录名、空格、括号在静态托管上的 404 问题
+- 生成链接统一使用站点根路径，中文路径保持原样，
+  浏览器发起请求时会自动编码，无需脚本预先编码
 
 用法：
     python update_docsify_readmes.py
@@ -17,7 +17,6 @@ import re
 import sys
 from pathlib import Path
 from typing import Iterable
-from urllib.parse import quote
 
 ROOT = Path(__file__).resolve().parent
 DOCSIFY_ROOT = ROOT / "docsify_root"
@@ -26,8 +25,8 @@ README_NAME = "README.md"
 SIDEBAR_NAME = "_sidebar.md"
 
 # 站点信息，按你的实际情况修改
-SITE_TITLE = "小闫同学_117个人知识库"
-SITE_DESC = "小闫同学_117个人 Docsify 知识库，用于统一沉淀产品文档、技术资料与流程规范。"
+SITE_TITLE = "小闫同学_117知识库"
+SITE_DESC = "小闫同学_117 Docsify 知识库，用于进行技术沉淀及项目展示,本仓库只进行知识库的维护不维护任何项目代码"
 
 # 不参与导航生成的目录
 IGNORE_DIRS = {"img", "images", "assets", "vendor", ".git", ".github", "node_modules"}
@@ -100,14 +99,14 @@ def display_name(path: Path) -> str:
 
 
 def site_link(target: Path) -> str:
-    """站点根路径链接，如 /01_产品业务文档/01_快速开始/README.md（已 URL 编码）。"""
+    """站点根路径链接，如 /01_产品业务文档/01_快速开始/README.md。"""
     rel = target.relative_to(DOCSIFY_ROOT).as_posix()
-    return "/" + quote(rel, safe="/")
+    return "/" + rel
 
 
 def local_link(target: Path) -> str:
-    """同目录内相对链接，如 ./快速开始.md（已 URL 编码）。"""
-    return "./" + quote(target.name, safe="")
+    """同目录内相对链接，如 ./快速开始.md。"""
+    return "./" + target.name
 
 
 def write_text(path: Path, lines: list[str]) -> None:
@@ -166,7 +165,7 @@ def write_directory_index(directory: Path) -> None:
 
 
 def write_root_readme() -> None:
-    """站点首页：按顶层分类全量展开目录与文档。"""
+    """站点首页：按目录层级嵌套展示，与真实目录结构一致。"""
     top_dirs = [child for child in iter_subdirs(DOCSIFY_ROOT) if has_document_descendants(child)]
 
     lines = [
@@ -178,31 +177,33 @@ def write_root_readme() -> None:
         "",
     ]
 
+    def walk(directory: Path, depth: int) -> None:
+        indent = "  " * depth
+        # 当前目录自身的文档
+        for file in iter_md_files(directory):
+            lines.append(f"{indent}- [{display_name(file)}]({site_link(file)})")
+        # 子目录（目录在前文件在后更符合浏览习惯时，可对调两段顺序）
+        for child in iter_subdirs(directory):
+            if not has_document_descendants(child):
+                continue
+            readme = child / README_NAME
+            if readme.exists():
+                lines.append(f"{indent}- [{display_name(child)}]({site_link(readme)})")
+            else:
+                lines.append(f"{indent}- {display_name(child)}")
+            walk(child, depth + 1)
+
     for top_dir in top_dirs:
         lines.append(f"### {display_name(top_dir)}")
         lines.append("")
-
-        sub_dirs = sorted(
-            (p for p in top_dir.rglob("*") if p.is_dir()),
-            key=lambda p: sort_key(DOCSIFY_ROOT, p),
-        )
-        for directory in sub_dirs:
-            if any(part in IGNORE_DIRS for part in directory.parts):
-                continue
-            readme = directory / README_NAME
-            if readme.exists() and directory != top_dir:
-                lines.append(f"- [{display_name(directory)}]({site_link(readme)})")
-                for file in iter_md_files(directory):
-                    lines.append(f"  - [{display_name(file)}]({site_link(file)})")
-
+        walk(top_dir, 1)
         lines.append("")
 
     lines.extend(
         [
             "## 维护说明",
             "",
-            "- 本页与 `_sidebar.md` 均由 `update_docsify_readmes.py` 自动生成，请勿手工长期维护。",
-            "- 新增或删除文档后，重新运行该脚本即可同步导航。",
+            "- 如果网页中的内容存在异常可以联系小闫同学_117,邮箱:1823997124@qq.com",
         ]
     )
 
@@ -250,8 +251,8 @@ def main() -> int:
     parser.add_argument(
         "--sidebar-depth",
         type=int,
-        default=2,
-        help="侧边栏展开层级，默认 2（顶层分类 + 一级子目录）",
+        default=4,
+        help="侧边栏展开层级，默认 4（足够覆盖常规嵌套目录）",
     )
     args = parser.parse_args()
 
